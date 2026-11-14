@@ -1,0 +1,21 @@
+# Build output
+bin/
+obj/
+publish/
+publish_release/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+
+# Secrets / local config
+.env
+.env.*
+*.pfx
+*.pem
+*.key
+
+# Logs
+*.log

@@ -1,0 +1,110 @@
+<Window x:Class="AllInBox.Views.AppDialogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="All In Box"
+        Width="400" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="False"
+        Background="{DynamicResource BgBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        FontFamily="{StaticResource MainFont}"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+
+    <Window.Resources>
+        <Style x:Key="DialogPrimaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Padding" Value="14,5"/>
+        </Style>
+
+        <Style x:Key="DialogDangerButton" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource DangerBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="14,5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="2" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DialogSecondaryButton" TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+            <Setter Property="Padding" Value="14,5"/>
+        </Style>
+    </Window.Resources>
+
+    <Border CornerRadius="2" Background="{DynamicResource BgBrush}" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/> <!-- Header -->
+                <RowDefinition Height="*"/>  <!-- Body -->
+                <RowDefinition Height="40"/> <!-- Actions -->
+            </Grid.RowDefinitions>
+
+            <!-- Header with Title and Close button -->
+            <Border Grid.Row="0" Background="{DynamicResource PanelBgBrush}" BorderBrush="{DynamicResource DividerBrush}" BorderThickness="0,0,0,1" MouseDown="Header_MouseDown">
+                <Grid Margin="12,0,0,0">
+                    <TextBlock x:Name="TxtTitle" Text="All In Box" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                    <Button HorizontalAlignment="Right" Width="32" VerticalAlignment="Stretch" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextSecondaryBrush}" 
+                            Click="BtnCancel_Click" Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="clsBrd" Background="{TemplateBinding Background}">
+                                    <Path x:Name="clsPath" Data="M 0,0 L 8,8 M 8,0 L 0,8" Stroke="{DynamicResource TextSecondaryBrush}" StrokeThickness="1.2" Width="8" Height="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="clsBrd" Property="Background" Value="{DynamicResource DangerBrush}"/>
+                                        <Setter TargetName="clsPath" Property="Stroke" Value="White"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Body (Icon + Message) -->
+            <Grid Grid.Row="1" Margin="14,14,14,14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border x:Name="BorderIcon" Grid.Column="0" Width="34" Height="34" CornerRadius="2" Background="{DynamicResource CardBgBrush}" 
+                        BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" Margin="0,0,12,0" VerticalAlignment="Top">
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock x:Name="TxtIcon" Text="!" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Image x:Name="ImageIcon" Source="/Assets/icon_lixeira.png" Width="18" Height="18" Stretch="Uniform" Visibility="Collapsed" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Grid>
+                </Border>
+
+                <TextBlock x:Name="TxtMessage" Grid.Column="1" Text="Mensagem do sistema aqui..." FontSize="12" Foreground="{DynamicResource TextPrimaryBrush}" 
+                           TextWrapping="Wrap" LineHeight="18" VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- Action Buttons -->
+            <Border Grid.Row="2" Background="{DynamicResource PanelBgBrush}" BorderBrush="{DynamicResource DividerBrush}" BorderThickness="0,1,0,0" Padding="12,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button x:Name="BtnSecondary" Content="Cancelar" Style="{StaticResource DialogSecondaryButton}" Margin="0,0,6,0" Click="BtnCancel_Click" Visibility="Collapsed"/>
+                    <Button x:Name="BtnPrimary" Content="OK" Style="{StaticResource DialogPrimaryButton}" Click="BtnConfirm_Click"/>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+    </Border>
+</Window>
