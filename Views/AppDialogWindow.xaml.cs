@@ -12,6 +12,7 @@ public partial class AppDialogWindow : Window
     public AppDialogWindow()
     {
         InitializeComponent();
+        PreviewKeyDown += (s, e) => { if (e.Key == Key.Escape) BtnCancel_Click(this, new RoutedEventArgs()); };
     }
 
     private void Header_MouseDown(object sender, MouseButtonEventArgs e)

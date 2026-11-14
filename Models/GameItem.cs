@@ -26,6 +26,7 @@ public class GameItem : INotifyPropertyChanged
     private bool _isSelected;
     private string _notes = string.Empty;
     private bool _isRunning;
+    private bool _isHidden;
 
     public string Id
     {
@@ -36,7 +37,13 @@ public class GameItem : INotifyPropertyChanged
     public string Title
     {
         get => _title;
-        set => SetField(ref _title, value);
+        set
+        {
+            if (SetField(ref _title, value))
+            {
+                OnPropertyChanged(nameof(Initial));
+            }
+        }
     }
 
     public string ExecutablePath
@@ -87,6 +94,19 @@ public class GameItem : INotifyPropertyChanged
         set => SetField(ref _dateAdded, value);
     }
 
+    /// <summary>Hidden games stay in the library file but are left out of every list, count and statistic.</summary>
+    public bool IsHidden
+    {
+        get => _isHidden;
+        set => SetField(ref _isHidden, value);
+    }
+
+    /// <summary>
+    /// True once the "is this a tool rather than a game?" heuristic has looked at this entry.
+    /// It only ever runs once per entry, so restoring a hidden item is never undone automatically.
+    /// </summary>
+    public bool AutoHideChecked { get; set; }
+
     public DateTime? LastPlayed
     {
         get => _lastPlayed;
@@ -95,6 +115,7 @@ public class GameItem : INotifyPropertyChanged
             if (SetField(ref _lastPlayed, value))
             {
                 OnPropertyChanged(nameof(LastPlayedText));
+                OnPropertyChanged(nameof(HasLastPlayed));
             }
         }
     }
@@ -111,6 +132,7 @@ public class GameItem : INotifyPropertyChanged
                     _playTimeSeconds = value * 60L;
                 }
                 OnPropertyChanged(nameof(PlayTimeText));
+                OnPropertyChanged(nameof(HasPlayTime));
             }
         }
     }
@@ -125,6 +147,7 @@ public class GameItem : INotifyPropertyChanged
                 _playTimeMinutes = (int)(value / 60);
                 OnPropertyChanged(nameof(PlayTimeMinutes));
                 OnPropertyChanged(nameof(PlayTimeText));
+                OnPropertyChanged(nameof(HasPlayTime));
             }
         }
     }
@@ -137,12 +160,16 @@ public class GameItem : INotifyPropertyChanged
             if (SetField(ref _installSizeBytes, value))
             {
                 OnPropertyChanged(nameof(SizeText));
+                OnPropertyChanged(nameof(HasSize));
             }
         }
     }
 
     [JsonIgnore]
     public string SizeText => FormatSize(_installSizeBytes);
+
+    [JsonIgnore]
+    public bool HasSize => _installSizeBytes > 0;
 
     public static string FormatSize(long bytes)
     {
@@ -186,6 +213,17 @@ public class GameItem : INotifyPropertyChanged
 
     [JsonIgnore]
     public string PlayTimeText => FormatPlayTime(PlayTimeSeconds);
+
+    /// <summary>False for games never played, so the UI can omit the "never played" placeholder.</summary>
+    [JsonIgnore]
+    public bool HasPlayTime => PlayTimeSeconds > 0;
+
+    [JsonIgnore]
+    public bool HasLastPlayed => _lastPlayed.HasValue;
+
+    /// <summary>First letter of the title, used as the icon when no icon could be extracted.</summary>
+    [JsonIgnore]
+    public string Initial => string.IsNullOrWhiteSpace(_title) ? "?" : _title.Trim()[..1].ToUpperInvariant();
 
     public static string FormatPlayTime(long totalSeconds)
     {

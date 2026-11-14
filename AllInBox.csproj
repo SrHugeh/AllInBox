@@ -9,8 +9,8 @@
     <ApplicationTitle>All In Box</ApplicationTitle>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
     <Product>All In Box - Game Launcher &amp; Library Organizer</Product>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +18,14 @@
     <None Update="Resources\i18n\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- HTML/CSS/JS front-end hosted in WebView2 -->
+    <Content Include="Web\**" Exclude="Web\dev-mock.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4314.35" />
   </ItemGroup>
 
 </Project>

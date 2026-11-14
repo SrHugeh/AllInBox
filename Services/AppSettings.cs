@@ -6,11 +6,7 @@ namespace AllInBox.Services;
 
 public class AppSettings
 {
-    private static readonly string SettingsFile = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "AllInBox",
-        "settings.json"
-    );
+    private static readonly string SettingsFile = Path.Combine(AppPaths.DataDirectory, "settings.json");
 
     public string Language { get; set; } = "auto"; // "auto", "pt-BR", "en-US", "es-ES", "ja-JP"
     public string Theme { get; set; } = "auto"; // "auto", "dark", "light", "custom"
@@ -21,6 +17,9 @@ public class AppSettings
 
     public bool MinimizeToTrayOnClose { get; set; } = true;
     public bool MinimizeToTrayOnLaunch { get; set; } = false;
+
+    /// <summary>Set once the automatic "hide non-game entries" pass has run on an existing library.</summary>
+    public bool NonGameCleanupDone { get; set; } = false;
 
     private static AppSettings? _instance;
     public static AppSettings Instance => _instance ??= Load();

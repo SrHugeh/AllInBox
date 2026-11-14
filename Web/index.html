@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>All In Box</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="app">
+  <header class="topbar" id="topbar"></header>
+  <div class="shell">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="main">
+      <header class="toolbar" id="toolbar"></header>
+      <div class="content" id="content"></div>
+    </main>
+  </div>
+</div>
+
+<div class="drop" id="drop" hidden></div>
+<div class="ctx" id="ctx" hidden></div>
+<div class="modal-root" id="modal-root"></div>
+<div class="toasts" id="toasts"></div>
+
+<script src="vendor/lucide.js"></script>
+<script src="vendor/gsap.min.js"></script>
+<script src="app.js"></script>
+<script src="modals.js"></script>
+<script src="boot.js"></script>
+</body>
+</html>

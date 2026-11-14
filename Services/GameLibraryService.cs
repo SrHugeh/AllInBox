@@ -13,10 +13,7 @@ namespace AllInBox.Services;
 
 public class GameLibraryService
 {
-    private static readonly string DataDirectory = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "AllInBox"
-    );
+    private static readonly string DataDirectory = AppPaths.DataDirectory;
 
     private static readonly string DatabaseFile = Path.Combine(DataDirectory, "games.json");
 
@@ -143,6 +140,59 @@ public class GameLibraryService
             SaveGames();
         }
         return removedCount;
+    }
+
+    private static readonly string[] NonGameNameMarkers =
+    {
+        "aseprite", "soundpad", "wallpaper engine", "wallpaper32", "wallpaper64",
+        "redistributable", "crash reporter", "crashreporter", "benchmark tool"
+    };
+
+    /// <summary>
+    /// Deliberately narrow: only names that are unmistakably utilities. Anything ambiguous stays visible,
+    /// because hiding a real game is worse than showing a tool. Titles are NOT matched on generic words such as
+    /// "update" or "launcher" (Half-Life 2 Update is a game; Minecraft Launcher / tModLoader can be how you play).
+    /// </summary>
+    public static bool LooksLikeNonGame(GameItem game)
+    {
+        string title = game.Title ?? string.Empty;
+        string exeName = Path.GetFileNameWithoutExtension(game.ExecutablePath ?? string.Empty);
+
+        foreach (var marker in NonGameNameMarkers)
+        {
+            if (title.Contains(marker, StringComparison.OrdinalIgnoreCase) ||
+                exeName.Contains(marker, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Hides entries that look like utilities. Each entry is judged once (AutoHideChecked), so a game the user
+    /// restored from "Ocultos" is never hidden again. Returns how many were newly hidden.
+    /// </summary>
+    public int HideSuspectedNonGames()
+    {
+        int hidden = 0;
+        bool changed = false;
+
+        foreach (var game in Games)
+        {
+            if (game.AutoHideChecked) continue;
+
+            game.AutoHideChecked = true;
+            changed = true;
+
+            if (!game.IsHidden && LooksLikeNonGame(game))
+            {
+                game.IsHidden = true;
+                hidden++;
+            }
+        }
+
+        if (changed) SaveGames();
+        return hidden;
     }
 
     public static bool IsBogusLauncherOrTool(string exePath, string? title = null)

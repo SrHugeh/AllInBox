@@ -12,11 +12,7 @@ namespace AllInBox.Services;
 
 public static class IconExtractor
 {
-    private static readonly string AppDataIconsDir = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "AllInBox",
-        "Icons"
-    );
+    private static readonly string AppDataIconsDir = Path.Combine(AppPaths.DataDirectory, "Icons");
 
     static IconExtractor()
     {
